@@ -1,0 +1,9 @@
+Python version:			3.12.2
+Numpy version:			1.26.0
+VTK version:			9.2
+SimpleITK version:		5.3
+Matplotlib version:		3.8.0
+Transformations version:	2024.6.1
+SciPy version:			1.11.3
+Testing matplotlib...Testing matplotlib... [OK]
+Your environment is ready.
