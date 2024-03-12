@@ -14,16 +14,21 @@ def region_grow(image, seed_point):
     segmentation_mask = np.zeros(image.shape, np.bool_)
     z, y, x = seed_point
     intensity = image[z, y, x]
-    print(f'Image data at position ({x}, {y}, {z}) has value {intensity}')
+    print(f'Image data at position ({x}, {y}, {z}) has intensity value {intensity}')
     print('Computing region growing...', end='', flush=True)
 
-    ## TODO: choose a lower and upper threshold
-    threshold_lower = intensity
-    threshold_upper = intensity
+    delta = 10  # higher - intesity range is wider (merging regions), lower - intensity range is narrower
+    max_distance = 11 # increase to allow for larger regions to be merged
+    
+    ## choose a lower and upper threshold
+    threshold_lower = max(intensity - delta, image.min())
+    threshold_upper = min(intensity + delta, image.max())
     _segmentation_mask = (np.greater(image, threshold_lower)
                           & np.less(image, threshold_upper)).astype(np.bool_)
 
-    ## TODO: pre-process the segmented image with a morphological filter
+    ## pre-process the segmented image with a morphological filter
+    structure = ndimage.generate_binary_structure(3, 1)
+    _segmentation_mask = ndimage.binary_opening(_segmentation_mask, structure)
 
     to_check = deque()
     to_check.append((z, y, x))
@@ -45,16 +50,22 @@ def region_grow(image, seed_point):
                             continue    # Skip the center point
                         nz, ny, nx = z + dz, y + dy, x + dx
 
-                        ## TODO: implement the code which checks whether the current
+                        ## implement the code which checks whether the current
                         ## voxel (nz, ny, nx) belongs to the region or not
+                        if (0 <= nz < image.shape[0] and
+                            0 <= ny < image.shape[1] and
+                            0 <= nx < image.shape[2] and
+                            _segmentation_mask[nz, ny, nx] and
+                            np.linalg.norm([nz - z, ny - y, nx - x]) <= max_distance):
+                                to_check.append((nz, ny, nx))
 
-                        ## OPTIONAL TODO: implement a stop criteria such that the algorithm
+                        ## OPTIONALimplement a stop criteria such that the algorithm
                         ## doesn't check voxels which are too far away
 
     # Post-process the image with a morphological filter
-    structure = np.ones((3, 3, 3))
     segmentation_mask = ndimage.binary_closing(segmentation_mask, structure=structure).astype(np.bool_)
     
     print('\rComputing region growing... [DONE]', flush=True)
 
     return segmentation_mask
+
