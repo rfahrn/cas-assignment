@@ -14,11 +14,12 @@ def region_grow(image, seed_point):
     segmentation_mask = np.zeros(image.shape, np.bool_)
     z, y, x = seed_point
     intensity = image[z, y, x]
-    print(f'Image data at position ({x}, {y}, {z}) has intensity value {intensity}')
+    print(f'Image data at position ({x}, {y}, {z}) has intensity value {intensity}') # print intensity value of the seed point
     print('Computing region growing...', end='', flush=True)
 
-    delta = 10  # higher - intesity range is wider (merging regions), lower - intensity range is narrower
-    max_distance = 11 # increase to allow for larger regions to be merged
+    # test around with parameters to get a good result (tedious work, but it's the only way to get a good result)
+    delta = 100  # higher - intesity range is wider (merging regions), lower - intensity range is narrower
+    max_distance = 50 # increase to allow for larger regions to be merged
     
     ## choose a lower and upper threshold
     threshold_lower = max(intensity - delta, image.min())
@@ -52,12 +53,8 @@ def region_grow(image, seed_point):
 
                         ## implement the code which checks whether the current
                         ## voxel (nz, ny, nx) belongs to the region or not
-                        if (0 <= nz < image.shape[0] and
-                            0 <= ny < image.shape[1] and
-                            0 <= nx < image.shape[2] and
-                            _segmentation_mask[nz, ny, nx] and
-                            np.linalg.norm([nz - z, ny - y, nx - x]) <= max_distance):
-                                to_check.append((nz, ny, nx))
+                        if (0 <= nz < image.shape[0] and 0 <= ny < image.shape[1] and 0 <= nx < image.shape[2] and _segmentation_mask[nz, ny, nx] and np.linalg.norm([nz - z, ny - y, nx - x]) <= max_distance): # check if  voxel is within  image and if it is not already visited
+                                to_check.append((nz, ny, nx)) # add voxel to the queue
 
                         ## OPTIONALimplement a stop criteria such that the algorithm
                         ## doesn't check voxels which are too far away
