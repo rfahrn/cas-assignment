@@ -18,8 +18,8 @@ def region_grow(image, seed_point):
     print('Computing region growing...', end='', flush=True)
 
     # test around with parameters to get a good result (tedious work, but it's the only way to get a good result)
-    delta = 100  # higher - intesity range is wider (merging regions), lower - intensity range is narrower
-    max_distance = 50 # increase to allow for larger regions to be merged
+    delta = 80  # higher - intesity range is wider (merging regions), lower - intensity range is narrower
+    max_distance = 20 # increase to allow for larger regions to be merged
     
     ## choose a lower and upper threshold
     threshold_lower = max(intensity - delta, image.min())
