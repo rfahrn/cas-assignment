@@ -17,11 +17,6 @@ def pivot_calibration(transforms):
     """
 
     ## TODO: Implement pivot calibration as discussed in the lecture
-
-    # 1. extract rotation matrix R and translation vector p from each transformation matrix.
-    # 2. construct matrix A and vector b
-    # 3. solve for x in Ax = b
-    
     T = np.eye(4) # identity matrix
     n = len(transforms) # number transfforms
     A = np.zeros((3*n, 6)) #  A
